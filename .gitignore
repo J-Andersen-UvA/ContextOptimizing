@@ -1,0 +1,10 @@
+build/
+out/
+.vs/
+CMakeUserPresets.json
+*.user
+*.suo
+*.VC.db
+
+docs/
+TODO.md

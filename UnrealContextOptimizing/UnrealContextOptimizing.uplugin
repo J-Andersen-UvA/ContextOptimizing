@@ -1,0 +1,40 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "0.1.0",
+  "FriendlyName": "Unreal Context Optimizing",
+  "Description": "Event-based hand-to-face collision correction for retargeted animation.",
+  "Category": "Animation",
+  "CreatedBy": "ContextOptimizing",
+  "CanContainContent": true,
+  "IsBetaVersion": true,
+  "Installed": false,
+  "Plugins": [
+    {
+      "Name": "SemanticSurfacePatches",
+      "Enabled": true
+    },
+    {
+      "Name": "AdditiveBoneCorrection",
+      "Enabled": true
+    }
+  ],
+  "Modules": [
+    {
+      "Name": "ContextOptimizingCore",
+      "Type": "Runtime",
+      "LoadingPhase": "PreDefault"
+    },
+    {
+      "Name": "UnrealContextOptimizing",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    },
+    {
+      "Name": "UnrealContextOptimizingEditor",
+      "Type": "Editor",
+      "LoadingPhase": "Default"
+    }
+  ]
+}
+

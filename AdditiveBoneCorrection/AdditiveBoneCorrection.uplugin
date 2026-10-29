@@ -1,0 +1,24 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "0.1.0",
+  "FriendlyName": "Additive Bone Correction",
+  "Description": "Selectable-chain IK corrections stored as a sparse additive animation layer.",
+  "Category": "Animation",
+  "CreatedBy": "ContextOptimizing",
+  "CanContainContent": true,
+  "IsBetaVersion": true,
+  "Installed": false,
+  "Modules": [
+    {
+      "Name": "AdditiveBoneCorrection",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    },
+    {
+      "Name": "AdditiveBoneCorrectionEditor",
+      "Type": "Editor",
+      "LoadingPhase": "Default"
+    }
+  ]
+}
