@@ -33,7 +33,7 @@ Rebuilding clears and replaces each enabled anchor's stored triangles using its 
 
 `Mirror Right to Left` prompts for the reference-mesh axis to negate, reflects right-side anchor locations and orientations across that plane, converts them back into the destination bone space, copies their patch settings to matching left-side anchors, and clears stale left-side triangles. `Rotate Normals Outwards` aligns every anchor to the nearest outward LOD 0 surface normal and clears stale triangles. Run `Build Surface Patches` afterward.
 
-The included preset creates fourteen anchors: forehead; left and right temple, cheek, lower cheek, ear, and zygoma; nose; mouth; and chin. Its positions are an approximate Character Creator starting layout in parent-bone local centimetres.
+The included preset creates seventeen anchors: forehead; left and right temple, cheek, lower cheek, ear, zygoma, and mouth corner; nose; upper mouth; lower mouth; and chin. Its positions are an approximate Character Creator starting layout in parent-bone local centimetres.
 
 `Copy Patches From Actor Blueprint...` copies anchor components from another actor Blueprint asset. Anchor transforms are converted between source and destination reference-bone orientations. If a copied bone does not exist on the destination mesh, the replacement bone entered in the dialog is used. Source-mesh triangles are discarded and must be rebuilt on the destination mesh.
 
