@@ -86,9 +86,14 @@ bool FSemanticZeroCalculator::calculateSemanticZeroFrame(
     int32 eventBoundaryFrame,
     ESemanticZeroType zeroType,
     int32& zeroFrame,
-    FString& errorMessage)
+    FString& errorMessage,
+    int32* holdEndFrame)
 {
     zeroFrame = INDEX_NONE;
+    if (holdEndFrame != nullptr)
+    {
+        *holdEndFrame = INDEX_NONE;
+    }
 
     TArray<FVector> positions;
     if (!sampleBonePositions(
@@ -238,6 +243,12 @@ bool FSemanticZeroCalculator::calculateSemanticZeroFrame(
 
     bool foundDeparture = false;
     int32 departureSearchFrame = INDEX_NONE;
+    int32 departureCandidateFrame = INDEX_NONE;
+    int32 departureWindows = 0;
+    constexpr int32 requiredDepartureWindows = 3;
+    const double minimumDepartureProgressCm = FMath::Max(
+        0.05,
+        maximumDistance * 0.003);
     for (int32 frameIndex = eventBoundaryFrame;
          frameIndex + progressWindowFrames < positions.Num();
          ++frameIndex)
@@ -246,11 +257,28 @@ bool FSemanticZeroCalculator::calculateSemanticZeroFrame(
         const double progressAwayFromGoal =
             smoothedDistances[laterFrame] -
             smoothedDistances[frameIndex];
-        if (progressAwayFromGoal > minimumProgressCm)
+        if (progressAwayFromGoal > minimumDepartureProgressCm)
         {
-            foundDeparture = true;
-            departureSearchFrame = laterFrame;
-            break;
+            if (departureWindows == 0)
+            {
+                departureCandidateFrame = frameIndex;
+            }
+            ++departureWindows;
+            if (departureWindows >= requiredDepartureWindows)
+            {
+                foundDeparture = true;
+                if (holdEndFrame != nullptr)
+                {
+                    *holdEndFrame = departureCandidateFrame;
+                }
+                departureSearchFrame = laterFrame;
+                break;
+            }
+        }
+        else
+        {
+            departureCandidateFrame = INDEX_NONE;
+            departureWindows = 0;
         }
     }
 

@@ -4,6 +4,13 @@
 #include "SemanticPatchProximityTypes.h"
 #include "ContactEventTypes.generated.h"
 
+UENUM(BlueprintType)
+enum class EContextOptimizationHandSide : uint8
+{
+    Right,
+    Left
+};
+
 USTRUCT(BlueprintType)
 struct UNREALCONTEXTOPTIMIZING_API FPatchProximityFrameNeighborGroup
 {

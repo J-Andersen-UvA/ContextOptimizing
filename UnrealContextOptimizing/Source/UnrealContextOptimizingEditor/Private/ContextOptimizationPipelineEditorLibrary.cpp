@@ -98,6 +98,7 @@ UContextOptimizationPipelineEditorLibrary::bakeSemanticEventCorrections(
             targetActor,
             settings.proximitySettings,
             settings.targetEvaluationSettings,
+            settings.handSide,
             settings.maximumFrameDistance,
             settings.targetNormalOffset);
     mappedEvents.Sort(
@@ -151,14 +152,20 @@ UContextOptimizationPipelineEditorLibrary::bakeSemanticEventCorrections(
         {
             continue;
         }
+        const int32 recoverySearchStartFrame =
+            settings.recoveryKeyMethod ==
+                    ESemanticRecoveryKeyMethod::ZeroAfterHold
+                ? mappedEvent.sourceEvent.representativeFrame
+                : mappedEvent.sourceEvent.endFrame;
         if (!FSemanticZeroCalculator::calculateSemanticZeroFrame(
                 sourceAnimation,
                 settings.sourceMovementBone,
                 mappedEvent.sourceEvent.representativeFrame,
-                mappedEvent.sourceEvent.endFrame,
+                recoverySearchStartFrame,
                 ESemanticZeroType::Recovery,
                 eventCorrection.sourceRecoveryEndFrame,
-                eventCorrection.errorMessage))
+                eventCorrection.errorMessage,
+                &eventCorrection.sourceHoldEndFrame))
         {
             continue;
         }
@@ -178,6 +185,9 @@ UContextOptimizationPipelineEditorLibrary::bakeSemanticEventCorrections(
         eventCorrection.targetRecoveryEndFrame = frameAtTime(
             *initialTargetAnimation,
             timeAtFrame(*sourceAnimation, eventCorrection.sourceRecoveryEndFrame));
+        eventCorrection.targetHoldEndFrame = frameAtTime(
+            *initialTargetAnimation,
+            timeAtFrame(*sourceAnimation, eventCorrection.sourceHoldEndFrame));
 
         eventCorrection.targetApproachStartFrame = FMath::Min(
             eventCorrection.targetApproachStartFrame,
@@ -192,6 +202,10 @@ UContextOptimizationPipelineEditorLibrary::bakeSemanticEventCorrections(
         eventCorrection.targetRecoveryEndFrame = FMath::Max(
             eventCorrection.targetRecoveryEndFrame,
             eventCorrection.targetEventEndFrame + 1);
+        eventCorrection.targetHoldEndFrame = FMath::Clamp(
+            eventCorrection.targetHoldEndFrame,
+            eventCorrection.targetRepresentativeFrame,
+            eventCorrection.targetRecoveryEndFrame - 1);
         if (eventCorrection.targetApproachStartFrame < 0 ||
             eventCorrection.targetRecoveryEndFrame >=
                 initialTargetAnimation->GetNumberOfSampledKeys())
@@ -278,12 +292,25 @@ UContextOptimizationPipelineEditorLibrary::bakeSemanticEventCorrections(
             result.correctionLayer->addOrUpdateKey(eventStartKey);
         }
         result.correctionLayer->addOrUpdateKey(current.solveResult.correctionKey);
-        if (current.targetEventEndFrame >
-            current.targetRepresentativeFrame)
+        if (settings.recoveryKeyMethod ==
+                ESemanticRecoveryKeyMethod::ZeroAtHold &&
+            current.targetEventEndFrame >
+                current.targetRepresentativeFrame)
         {
             FAdditiveBoneCorrectionKey holdEndKey =
                 current.solveResult.correctionKey;
             holdEndKey.frame = current.targetEventEndFrame;
+            result.correctionLayer->addOrUpdateKey(holdEndKey);
+        }
+
+        if (settings.recoveryKeyMethod ==
+                ESemanticRecoveryKeyMethod::ZeroAfterHold &&
+            current.targetHoldEndFrame >
+                current.targetRepresentativeFrame)
+        {
+            FAdditiveBoneCorrectionKey holdEndKey =
+                current.solveResult.correctionKey;
+            holdEndKey.frame = current.targetHoldEndFrame;
             result.correctionLayer->addOrUpdateKey(holdEndKey);
         }
 

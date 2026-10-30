@@ -28,3 +28,5 @@ Source and target actors author independent `SurfacePatches` components matched 
 
 `Bake Semantic Event Corrections` runs the current editor pipeline in one call: extract and map source events, detect approach and recovery timing, solve target position IK, create sparse additive keys, and bake a new animation asset. Its result retains per-event timing and IK diagnostics.
 
+The pipeline settings contain a `handSide` value. Source and target interaction points are filtered by a `right` or `left` prefix on their interaction-group or point IDs before animation evaluation. To correct both hands in separate passes, run the right-hand pass first and use its output animation as the target input for the left-hand pass. The source animation remains unchanged for both passes.
+

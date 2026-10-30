@@ -20,5 +20,6 @@ public:
         int32 eventBoundaryFrame,
         ESemanticZeroType zeroType,
         int32& zeroFrame,
-        FString& errorMessage);
+        FString& errorMessage,
+        int32* holdEndFrame = nullptr);
 };

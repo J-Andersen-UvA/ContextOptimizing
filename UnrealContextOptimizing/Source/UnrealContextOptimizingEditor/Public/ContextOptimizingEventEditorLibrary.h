@@ -29,6 +29,8 @@ public:
         const AActor* targetActor,
         const FPatchProximitySettings& proximitySettings,
         const FTargetSemanticEventEvaluationSettings& targetEvaluationSettings,
+        EContextOptimizationHandSide handSide =
+            EContextOptimizationHandSide::Right,
         int32 maximumFrameDistance = 1,
         double targetNormalOffset = 0.0);
 };

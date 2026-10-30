@@ -10,7 +10,7 @@ First we prepare the avatars:
 2. Define interaction points on the fingers of the source avatar.
 3. Copy the data over and tweak the locations on the target avatar.
 The resulting avatar looks like:
-<img src="Resources/faceDiagram.png" alt="Face diagram" width="600" height="400">
+<img src="Resources/faceDiagram.png" alt="Face diagram" width="600" height="400"><img src="Resources/facePatchesPalmer.png" alt="Face patches on an avatar" width="300" height="375">
 
 Then we build events using the source animation:
 1. Anchors and bounds perform broad-phase filtering; triangle surfaces provide the exact distance.

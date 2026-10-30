@@ -9,10 +9,21 @@
 class UAdditiveBoneCorrectionLayer;
 class UAnimSequence;
 
+UENUM(BlueprintType)
+enum class ESemanticRecoveryKeyMethod : uint8
+{
+    ZeroAtHold,
+    ZeroAfterHold
+};
+
 USTRUCT(BlueprintType)
 struct UNREALCONTEXTOPTIMIZINGEDITOR_API FContextOptimizationPipelineSettings
 {
     GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Context Optimization")
+    EContextOptimizationHandSide handSide =
+        EContextOptimizationHandSide::Right;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Context Optimization")
     FName sourceMovementBone;
@@ -39,6 +50,10 @@ struct UNREALCONTEXTOPTIMIZINGEDITOR_API FContextOptimizationPipelineSettings
     bool onlyCorrectWhenNeeded = true;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Context Optimization")
+    ESemanticRecoveryKeyMethod recoveryKeyMethod =
+        ESemanticRecoveryKeyMethod::ZeroAtHold;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Context Optimization")
     FString outputPackagePath = TEXT("/Game/ContextOptimization/Output");
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Context Optimization")
@@ -63,6 +78,9 @@ struct UNREALCONTEXTOPTIMIZINGEDITOR_API FContextOptimizationEventCorrection
     int32 sourceRecoveryEndFrame = INDEX_NONE;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Context Optimization")
+    int32 sourceHoldEndFrame = INDEX_NONE;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Context Optimization")
     int32 targetApproachStartFrame = INDEX_NONE;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Context Optimization")
@@ -76,6 +94,9 @@ struct UNREALCONTEXTOPTIMIZINGEDITOR_API FContextOptimizationEventCorrection
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Context Optimization")
     int32 targetRecoveryEndFrame = INDEX_NONE;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Context Optimization")
+    int32 targetHoldEndFrame = INDEX_NONE;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Context Optimization")
     FBoneCorrectionIkResult solveResult;

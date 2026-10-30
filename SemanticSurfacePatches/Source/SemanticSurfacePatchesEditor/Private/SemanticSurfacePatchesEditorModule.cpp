@@ -1,6 +1,8 @@
 #include "Modules/ModuleManager.h"
 
 #include "PropertyEditorModule.h"
+#include "SemanticInteractionPointsComponent.h"
+#include "SemanticInteractionPointsComponentCustomization.h"
 #include "SurfacePatchAnchorComponent.h"
 #include "SurfacePatchAnchorComponentCustomization.h"
 #include "SurfacePatchesComponent.h"
@@ -14,6 +16,10 @@ public:
         FPropertyEditorModule& propertyEditor =
             FModuleManager::LoadModuleChecked<FPropertyEditorModule>(
                 TEXT("PropertyEditor"));
+        propertyEditor.RegisterCustomClassLayout(
+            USemanticInteractionPointsComponent::StaticClass()->GetFName(),
+            FOnGetDetailCustomizationInstance::CreateStatic(
+                &FSemanticInteractionPointsComponentCustomization::makeInstance));
         propertyEditor.RegisterCustomClassLayout(
             USurfacePatchesComponent::StaticClass()->GetFName(),
             FOnGetDetailCustomizationInstance::CreateStatic(
@@ -32,6 +38,8 @@ public:
             FModuleManager::GetModulePtr<FPropertyEditorModule>(
                 TEXT("PropertyEditor")))
         {
+            propertyEditor->UnregisterCustomClassLayout(
+                USemanticInteractionPointsComponent::StaticClass()->GetFName());
             propertyEditor->UnregisterCustomClassLayout(
                 USurfacePatchesComponent::StaticClass()->GetFName());
             propertyEditor->UnregisterCustomClassLayout(

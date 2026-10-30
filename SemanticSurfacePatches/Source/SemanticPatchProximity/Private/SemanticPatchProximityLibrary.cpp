@@ -5,6 +5,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/Actor.h"
 #include "SemanticInteractionPointComponent.h"
+#include "SemanticInteractionPointsComponent.h"
 
 FSemanticPose USemanticPatchProximityLibrary::makePoseFromSkeletalMesh(
     const USkeletalMeshComponent* skeletalMesh)
@@ -33,6 +34,12 @@ USemanticPatchProximityLibrary::getInteractionPoints(const AActor* actor)
     if (actor == nullptr)
     {
         return points;
+    }
+
+    if (const USemanticInteractionPointsComponent* owner =
+        actor->FindComponentByClass<USemanticInteractionPointsComponent>())
+    {
+        return owner->getEnabledInteractionPoints();
     }
 
     TArray<USemanticInteractionPointComponent*> components;

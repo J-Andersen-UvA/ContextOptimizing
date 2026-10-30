@@ -30,6 +30,22 @@ FAnimPoseEvaluationOptions makeEvaluationOptions(
     }
     return options;
 }
+
+bool matchesHandSide(
+    const FSemanticInteractionPoint& point,
+    const EContextOptimizationHandSide handSide)
+{
+    const FString prefix =
+        handSide == EContextOptimizationHandSide::Left
+            ? TEXT("left")
+            : TEXT("right");
+    return point.interactionGroupId.ToString().StartsWith(
+               prefix,
+               ESearchCase::IgnoreCase) ||
+        point.pointId.ToString().StartsWith(
+            prefix,
+            ESearchCase::IgnoreCase);
+}
 }
 
 TArray<FMappedSemanticPatchEvent>
@@ -40,6 +56,7 @@ UContextOptimizingEventEditorLibrary::extractAndMapSemanticPatchEvents(
     const AActor* targetActor,
     const FPatchProximitySettings& proximitySettings,
     const FTargetSemanticEventEvaluationSettings& targetEvaluationSettings,
+    const EContextOptimizationHandSide handSide,
     const int32 maximumFrameDistance,
     const double targetNormalOffset)
 {
@@ -65,10 +82,20 @@ UContextOptimizingEventEditorLibrary::extractAndMapSemanticPatchEvents(
         sourceSurfacePatches->getEnabledPatches();
     const TArray<FSurfacePatchAnchor> targetPatches =
         targetSurfacePatches->getEnabledPatches();
-    const TArray<FSemanticInteractionPoint> interactionPoints =
+    TArray<FSemanticInteractionPoint> interactionPoints =
         USemanticPatchProximityLibrary::getInteractionPoints(sourceActor);
-    const TArray<FSemanticInteractionPoint> targetInteractionPoints =
+    TArray<FSemanticInteractionPoint> targetInteractionPoints =
         USemanticPatchProximityLibrary::getInteractionPoints(targetActor);
+    interactionPoints.RemoveAll(
+        [handSide](const FSemanticInteractionPoint& point)
+        {
+            return !matchesHandSide(point, handSide);
+        });
+    targetInteractionPoints.RemoveAll(
+        [handSide](const FSemanticInteractionPoint& point)
+        {
+            return !matchesHandSide(point, handSide);
+        });
     if (sourcePatches.IsEmpty() ||
         targetPatches.IsEmpty() ||
         interactionPoints.IsEmpty() ||
